@@ -1,0 +1,140 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .d-flex {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px;
+    }
+
+    .channels-sect, .right {
+        width: 45%;
+    }
+
+    .channels-sect {
+        border-right: 1px solid #ccc;
+        padding-right: 20px;
+    }
+
+    .channel {
+        cursor: pointer;
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+        .channel:hover {
+            background-color: #ced4da;
+        }
+
+    #messages {
+        height: 300px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #fff;
+        border-radius: 5px;
+    }
+
+    form {
+        margin-top: 10px;
+    }
+
+        form input[type="text"] {
+            width: calc(100% - 90px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            form button:hover {
+                background-color: #0056b3;
+            }
+</style>
+
+<div class="d-flex justify-content-between">
+    <div class="channels-sect">
+        <form id="channelform" onsubmit="return createChannel()">
+            <input id="nameinput" type="text" placeholder="Channel Name" required />
+            <button type="submit">Make New Channel</button>
+        </form>
+        <div id="channels">
+            @if (ViewBag.ChannelNames != null)
+            {
+                foreach (var item in ViewBag.ChannelNames as List<string>)
+                {
+                    <h4 class="channel" onclick="selectChannel('@item')">@item</h4>
+                }
+            }
+        </div>
+    </div>
+    <div class="right">
+        <h2 style="text-align:center" id="channelname">Select a channel</h2>
+        <div id="messages"></div>
+        <div>
+            <form id="messageform" style="display:none" onsubmit="return sendMessage()">
+                <input id="messageinput" type="text" placeholder="Type a message" required />
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function createChannel() {
+        const nameInput = document.getElementById('nameinput');
+        const channelName = nameInput.value.trim();
+        if (channelName) {
+            const channelsDiv = document.getElementById('channels');
+            const newChannel = document.createElement('h4');
+            newChannel.className = 'channel';
+            newChannel.textContent = channelName;
+            newChannel.onclick = () => selectChannel(channelName);
+            channelsDiv.appendChild(newChannel);
+            nameInput.value = '';
+        }
+        return false;
+    }
+
+    function selectChannel(channelName) {
+        document.getElementById('channelname').textContent = channelName;
+        document.getElementById('messageform').style.display = 'block';
+        document.getElementById('messages').innerHTML = '';
+    }
+
+    function sendMessage() {
+        const messageInput = document.getElementById('messageinput');
+        const message = messageInput.value.trim();
+        if (message) {
+            const messagesDiv = document.getElementById('messages');
+            const newMessage = document.createElement('div');
+            newMessage.textContent = message;
+            messagesDiv.appendChild(newMessage);
+            messageInput.value = '';
+        }
+        return false;
+    }
+</script>

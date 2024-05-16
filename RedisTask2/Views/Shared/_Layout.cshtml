@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RedisPublicChannelApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .d-flex {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+        }
+
+        .channels-sect, .right {
+            width: 45%;
+        }
+
+        .channels-sect {
+            border-right: 1px solid #ccc;
+            padding-right: 20px;
+        }
+
+        .channel {
+            cursor: pointer;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+            .channel:hover {
+                background-color: #ced4da;
+            }
+
+        #messages {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+
+            form input[type="text"] {
+                width: calc(100% - 90px);
+                padding: 10px;
+                margin-right: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            form button {
+                padding: 10px 20px;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+                form button:hover {
+                    background-color: #0056b3;
+                }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Message Task</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - RedisPublicChannelApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        function createChannel() {
+            const nameInput = document.getElementById('nameinput');
+            const channelName = nameInput.value.trim();
+            if (channelName) {
+                const channelsDiv = document.getElementById('channels');
+                const newChannel = document.createElement('h4');
+                newChannel.className = 'channel';
+                newChannel.textContent = channelName;
+                newChannel.onclick = () => selectChannel(channelName);
+                channelsDiv.appendChild(newChannel);
+                nameInput.value = '';
+            }
+            return false;
+        }
+
+        function selectChannel(channelName) {
+            document.getElementById('channelname').textContent = channelName;
+            document.getElementById('messageform').style.display = 'block';
+            document.getElementById('messages').innerHTML = '';
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageinput');
+            const message = messageInput.value.trim();
+            if (message) {
+                const messagesDiv = document.getElementById('messages');
+                const newMessage = document.createElement('div');
+                newMessage.textContent = message;
+                messagesDiv.appendChild(newMessage);
+                messageInput.value = '';
+            }
+            return false; 
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
